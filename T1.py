@@ -50,7 +50,22 @@ def XYVetor(m):
 		vY[i]= mat[i][1]
 	
 	return vX,vY
-	
+
+#retorna o maior valor do vetor
+def maiorValor(vet, l):
+	m = vet[0]
+	for i in range(l):
+		if (m > vet[i]):
+			m = vet[i]
+	return m
+
+#retorna o menor valor do vetor
+def menorValor(vet, l):
+	m = vet[0]
+	for i in range(l):
+		if (m < vet[i]):
+			m = vet[i]
+	return m
 
 
 '''---------------------''
@@ -133,7 +148,8 @@ for i in range(l):
 	r[i] = a0*vetX[i]+a1
 	
 
-plt.plot(vetX,vetY,'ro', vetX,r,'-' )
-plt.axis([vetX[0] - 1 ,vetX[l-1] + 1, vetY[0] , vetY[l-1]])
+plt.plot(vetX,vetY,'ro', vetX,r,'-')
+
+plt.axis([vetX[0] - 1 ,vetX[l-1] + 1,maiorValor(vetY,l)*0.8, menorValor(vetY,l)*1.2])
 
 plt.show()
