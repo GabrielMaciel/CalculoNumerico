@@ -1,4 +1,8 @@
+'''
+	Trabalho de Calculo numerico
+	Integrantes: Gabriel Maciel e Henrique Saenger
 
+'''
 #region Import
 import numpy as np
 import matplotlib.pyplot as plt
@@ -117,7 +121,8 @@ a1 = 0
 #leitura dos elementos da matriz
 for i in range(c):
 	for j in range(l):
-		mat[j][i]=float(input())
+		mat[j][i] = float(input())
+
 
 #repartir a matriz em X e Y
 vetX,vetY = XYVetor(mat)
@@ -136,12 +141,14 @@ somatXY = calcularSomatorioXY(mat,c)
 a0 = (n*somatXY - somatX*somatY) / (n*somatX2 - (somatX*somatX))
 a1 = (somatX*somatXY - somatY*somatX2) / (somatX*somatX - n*somatX2)
 
-print("")
-print("a0")
-print(a0)
 
-print("a1")
-print(a1)
+print("")
+print("a0 = {0}".format(a0))
+print("")
+print("a1 = {0}".format(a1))
+print("")
+print("r = {0}*x+{1}".format(a0,a1))
+
 
 #MQ
 for i in range(l):
