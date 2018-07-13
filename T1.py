@@ -36,7 +36,7 @@ def calcularSomatorioY(m):
 	return s
 
 #calcula: Somatorio de Y
-def calcularSomatorioY(m, nX):
+def calcularSomatorioYMulti(m, nX):
 	s = 0
 	for i in range(nX):
 		s = s + m[i]
@@ -82,13 +82,14 @@ def XYVetor(m):
 	if l>2 or s == "linear multiplo":
 		for i in range(l-1):
 			vX[i] = [0]*c
+	else:
+		for i in range(l):
+			vX[i] = [0]*(c-1)
+			for j in range(c-1):
+				vX[i]= m[i][j]
 
-	for i in range(l):
-		vX[i] = [0]*c-1
-		for j in range(c-1):
-			vX[i]= m[i][j]
-	for i in range(l):
-		vY[i]= m[i][1]
+		for i in range(l):
+			vY[i]= m[i][1]
 	
 	return vX,vY
 
@@ -190,6 +191,7 @@ def LinearSimples():
 	for i in range(c):
 		for j in range(l):
 			mat[j][i] = float(input())
+
 	#repartir a matriz em X e Y
 	vetX,vetY = XYVetor(mat)
 
@@ -249,7 +251,7 @@ def LinearMultiplo():
 	#n
 	matR[0][0] = l
 	#Y
-	matR[0][l] = calcularSomatorioY(mat[l-1],c)
+	matR[0][l] = calcularSomatorioYMulti(mat[l-1],c)
 
 	for i in range(1,l):
 		matR[i][0] = calcularSomatorioXVet(mat[i-1], c)
