@@ -6,3 +6,9 @@ t2:
 
 t3:
 	python T1.py < teste3
+
+gaus:
+	python T1.py < gaus
+
+lm:
+	python T1.py < LM
