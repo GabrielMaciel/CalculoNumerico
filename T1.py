@@ -6,6 +6,7 @@
 #region Import
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.linalg import inv
 #endregion 
 
 '''---------------------''
@@ -32,11 +33,11 @@ def calcularSomatorioXVet(m, nX):
 def calcularSomatorioY(m):
 	s = 0
 	for i in range(l):
-		s = s + m[i][1]
+		s = s + m[i]
 	return s
 
 #calcula: Somatorio de Y
-def calcularSomatorioYMulti(m, nX):
+def calcularSomatorioYVet(m, nX):
 	s = 0
 	for i in range(nX):
 		s = s + m[i]
@@ -79,15 +80,13 @@ def XYVetor(m):
 	vX = [0]*l
 	vY = [0]*l
 
-	if l>2 or s == "linear multiplo":
+	if s == "linear multiplo":
 		for i in range(l-1):
 			vX[i] = [0]*c
 	else:
-		for i in range(l):
-			vX[i] = [0]*(c-1)
-			for j in range(c-1):
-				vX[i]= m[i][j]
-
+		for j in range(l):
+			vX[j]= m[j][0]
+			print(m[j][0])
 		for i in range(l):
 			vY[i]= m[i][1]
 	
@@ -109,6 +108,13 @@ def menorValor(vet, l):
 			m = vet[i]
 	return m
 
+#Funcao que separa X de Y
+def separaY(m):
+	y = [0]*l
+	for i in range(l):
+		y[i] = m[i][c-1]
+	return y
+
 #calcula o vetor resultante Multiplo de alpha
 def calculaAlpha(m, x, y):
 	#Alpha auxiliar
@@ -127,7 +133,6 @@ def calculaAlpha(m, x, y):
 
 	return a
 
-
 #Retorna a matriz depois de GAUSS
 def GAUSS(matA, n):
 	print("Gauss Entrada:")
@@ -136,7 +141,7 @@ def GAUSS(matA, n):
 	#Declara matriz final 
 	matI = [0]*(l)
 	for k in range(l):
-		matI[k] = [0]*(l+1)
+		matI[k] = [0]*(c)
 
 	# | 1 2 3 |
 	# | 4 5 6 |
@@ -153,7 +158,7 @@ def GAUSS(matA, n):
 			#escolhe o base  
 			base = matA[k][i]/matI[i][i]
 			#Calcula cada elemento
-			for j in range(i,l+1):
+			for j in range(i,c):
 				print("i: {2} k: {0} j: {1} base{3}".format(k,j,i,base))
 				matI[k][j] = matI[k][j] - matI[i][j]*base
 			print("k:{0}  mat: {1}".format(k,matA[k]))
@@ -163,6 +168,11 @@ def GAUSS(matA, n):
 	print(matI)
 
 	return matI
+
+#Multiplica matrizes
+def MultMatrix(A,B):
+
+	return R
 
 def LinearSimples():
 	#Declaracao da matriz
@@ -201,7 +211,7 @@ def LinearSimples():
 
 	#calculando somatorio
 	somatX = calcularSomatorioX(mat)
-	somatY = calcularSomatorioY(mat)
+	somatY = calcularSomatorioY(vetY)
 	somatX2 = calcularSomatorioX2(mat)
 	somatXY = calcularSomatorioXY(mat,c)
 
@@ -214,6 +224,7 @@ def LinearSimples():
 	print("a1 = {0}".format(a1))
 	print("")
 	print("r = {0}*x+{1}".format(a0,a1))
+
 	#MQ
 	if s=="linear simples":
 		for i in range(l):
@@ -235,42 +246,73 @@ def LinearMultiplo():
 		mat[i] = [0]*c
 
 	#leitura dos elementos da matriz
-	for i in range(l):
-		for j in range(c):
-			mat[i][j] = float(input())
+	for i in range(c):
+		for j in range(l):
+			mat[j][i] = float(input())
 
 	print(mat)
 	#Valores dos coeficientes
 	alpha = [0]*l
 
 	#Matriz Resultante
-	matR = [0]*(l)
-	for i in range(l):
-		matR[i] = [0]*(l+1)
+	matR = [0]*(c)
+	for i in range(c):
+		matR[i] = [0]*(c)
+
 
 	#n
 	matR[0][0] = l
+	
 	#Y
-	matR[0][l] = calcularSomatorioYMulti(mat[l-1],c)
+	#matR[0][c-1] = calcularSomatorioYVet(mat[c-1],c)
 
-	for i in range(1,l):
+	#Calcula intermediarios
+	for i in range(1,c):
 		matR[i][0] = calcularSomatorioXVet(mat[i-1], c)
 		matR[0][i] = calcularSomatorioXVet(mat[i-1], c)
-		matR[i][l] = calcularSomatorioXX(mat[i-1],mat[l-1])
+		matR[i][c-1] = calcularSomatorioXX(mat[i-1],mat[c-1])
 
-	matR[0][l] = calcularSomatorioXVet(mat[l-1], c)
+	matR[0][c-1] = calcularSomatorioXVet(mat[c-1], c)
 
-	for i in range(1,l):
-		for j in range(1,l+1):
+	for i in range(1,c):
+		for j in range(1,c):
 			 matR[i][j] = calcularSomatorioXX(mat[i-1], mat[j-1])
 
-	print(matR)
+	Y = np.array([calcularSomatorioYVet(mat[c-1],c),calcularSomatorioXX(mat[0],mat[c-1]),calcularSomatorioXX(mat[1],mat[c-1])])
+	#print("Y", Y)
 
-	MF = GAUSS(matR, l)
+	mR = np.matrix(matR)
+	#print("Matriz", mR)
+
+	#mat * matT
+	step1=np.matmul(mR,mR.transpose())
+
+	#print("Step1", step1)
+
+	#inversa de step1
+	step2 = step1.I
 	
-	alpha = calculaAlpha(MF,l,l+1)
+	#print("Step2",step2)
 	
-	print(alpha)
+	#mat * step2
+	step3 = step2 * mR
+
+	#print("Step3",step3)
+
+	#step3 * Y
+	MF =  step3.dot(Y)
+
+	#print("MF",MF)
+
+	R = GAUSS(matR, c)
+	
+	print("Calculo usado: (Mat*MatT)^-1 * Mat * Y")
+
+	#print(alpha)
+
+	plt.plot(mat[0],mat[c],'ro',mat[1],mat[c],'ro', R,R,'-')
+	
+	plt.show()
 
 	return 0
 
@@ -296,8 +338,8 @@ print ("");print ("");print ("")
 #endregion
 
 #leitura de linha e coluna
-c = int(input())
 l = int(input())
+c = int(input())
 
 if not( l>0 and c>1):
 	print("Numeros minimos da tabela nao foram atingidos, tente com uma tabela de ao menos 1 linha e 2 colunas")
@@ -318,4 +360,13 @@ elif s == "linear polinomial":
 	LinearPolinomial()
 
 else:
+	#declara matriz	
+	mat = [0]*l
+	for i in range(l):
+		mat[i] = [0]*c
+
+	#leitura dos elementos da matriz
+	for i in range(c):
+		for j in range(l):
+			mat[j][i] = float(input())
 	GAUSS(mat, l)
