@@ -6,6 +6,7 @@
 #region Import
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.linalg import inv
 #endregion 
 
 '''---------------------''
@@ -107,6 +108,13 @@ def menorValor(vet, l):
 			m = vet[i]
 	return m
 
+#Funcao que separa X de Y
+def separaY(m):
+	y = [0]*l
+	for i in range(l):
+		y[i] = m[i][c-1]
+	return y
+
 #calcula o vetor resultante Multiplo de alpha
 def calculaAlpha(m, x, y):
 	#Alpha auxiliar
@@ -160,6 +168,11 @@ def GAUSS(matA, n):
 	print(matI)
 
 	return matI
+
+#Multiplica matrizes
+def MultMatrix(A,B):
+
+	return R
 
 def LinearSimples():
 	#Declaracao da matriz
@@ -242,15 +255,18 @@ def LinearMultiplo():
 	alpha = [0]*l
 
 	#Matriz Resultante
-	matR = [0]*(c+1)
-	for i in range(c+1):
+	matR = [0]*(c)
+	for i in range(c):
 		matR[i] = [0]*(c)
 
-	#n
-	matR[0][0] = c
-	#Y
-	matR[0][c-1] = calcularSomatorioYVet(mat[c-1],c)
 
+	#n
+	matR[0][0] = l
+	
+	#Y
+	#matR[0][c-1] = calcularSomatorioYVet(mat[c-1],c)
+
+	#Calcula intermediarios
 	for i in range(1,c):
 		matR[i][0] = calcularSomatorioXVet(mat[i-1], c)
 		matR[0][i] = calcularSomatorioXVet(mat[i-1], c)
@@ -262,15 +278,39 @@ def LinearMultiplo():
 		for j in range(1,c):
 			 matR[i][j] = calcularSomatorioXX(mat[i-1], mat[j-1])
 
-	print("Matriz", matR)
+	Y = np.array([calcularSomatorioYVet(mat[c-1],c),calcularSomatorioXX(mat[0],mat[c-1]),calcularSomatorioXX(mat[1],mat[c-1])])
+	#print("Y", Y)
 
-	MF = GAUSS(matR, l)
-	
-	alpha = calculaAlpha(MF,l,l+1)
-	
-	print(alpha)
+	mR = np.matrix(matR)
+	#print("Matriz", mR)
 
-	plt.plot(mat[0],mat[c],'ro',mat[1],mat[c],'ro', MF,MF,'-')
+	#mat * matT
+	step1=np.matmul(mR,mR.transpose())
+
+	#print("Step1", step1)
+
+	#inversa de step1
+	step2 = step1.I
+	
+	#print("Step2",step2)
+	
+	#mat * step2
+	step3 = step2 * mR
+
+	#print("Step3",step3)
+
+	#step3 * Y
+	MF =  step3.dot(Y)
+
+	#print("MF",MF)
+
+	R = GAUSS(matR, c)
+	
+	print("Calculo usado: (Mat*MatT)^-1 * Mat * Y")
+
+	#print(alpha)
+
+	plt.plot(mat[0],mat[c],'ro',mat[1],mat[c],'ro', R,R,'-')
 	
 	plt.show()
 
