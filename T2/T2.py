@@ -6,9 +6,10 @@
 
 #imports
 import scipy.integrate as integrate
+import scipy
 import numpy as np
 from sympy import *
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 
 
 '''---------------------''
@@ -35,7 +36,7 @@ def integral(x0,x1):
 	elif tipo == "simpson":
 		Simpson(x0,x1)
 	elif tipo == "romberg":
-		Romberg(x0,x1)
+		Romberg(f,x0,x1)
 
 	return 0;
 
@@ -112,6 +113,7 @@ def Trapezio(x0,x1):
 		print("sem funcao  = sem calculo do erro")
 
 
+
 	return 0
 
 
@@ -145,6 +147,8 @@ def Simpson(x0,x1):
 	
 		Is = s1 *(s2+s3+s4)
 		print ("Is = {0} ".format(Is))
+		plt.plot(Is)
+		
 	except ZeroDivisionError as detail:
 		print(detail)
 	#resultado
@@ -153,8 +157,8 @@ def Simpson(x0,x1):
 	Es = (-(h**5)/90 )*eval(f)
 	print("Es = ", Es)
 
+	
 	return 0
-
 
 '''
 		Romberg
@@ -162,13 +166,41 @@ def Simpson(x0,x1):
 
 
 #Romberg
-def Romberg(x0,x1):
+def Romberg(fun,x0,x1):
+	n = int(input())
+	r = np.array([[0]*(n+1)]*(n+1),float)
+	h = x1-x0
+	x = x0
+	s1 = eval(fun)
+	x = x1
+	s2 = eval(fun)
+	r[0,0] = (1/2) * h*(s1+s2)
+	
+	p2 = 1
+	
+	for i in xrange(0, n+1):
+
+		h = h/2
+		s = 0.0
+		p2 = 2 * p2
+		for k in xrange(1, p2, 2):
+			x = x0 + k * h
+			s = s + eval(fun)
+
+		r[i,0] = 0.5 * r[i-1,0] + s*h
+
+		p4 = 1
+
+		for j in xrange(1, i+1):
+			p4 = 4*p4
+			r[i,j] = r[i,j-1]+(r[i,j-1] - r[i-1,j-1])/(p4-1)
 
 
+	print (r)
+	plt.plot(r)
+	plt.show()
 
-
-
-	return 0
+	return r
 
 '''
 	Derivacao
