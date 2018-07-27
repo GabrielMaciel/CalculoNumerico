@@ -1,0 +1,4 @@
+sqrt(y) + (y+1) * cos(y)
+1/(2*sqrt(y))-(y+1)*sin(y)+cos(y)
+2 
+10
