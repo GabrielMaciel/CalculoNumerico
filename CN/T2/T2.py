@@ -158,38 +158,107 @@ def Simpson(x0,x1):
 		Romberg
 '''
 
+def trapezcomp(f, a, b, n):
+
+ 	h = (x1 - x0) / n
+ 	x = x0
+ 
+    # Regra
+
+	In = eval(f)
+	for k in range(1, n):
+	    x  = x + h
+	    In += 2*eval(f)
+		
+	x = x1
+	return (In + eval(f))*h*0.5
+
 def Romberg(fun,x0,x1):
+
+	p=3
+	I = np.zeros((p, p))
+	for k in range(0, p):
+	    # Composite trapezoidal rule for 2^k panels
+	    I[k, 0] = trapezcomp(f, x0, x1, 2**k)
+
+	    # Romberg recursive formula
+	    for j in range(0, k):
+	        I[k, j+1] = (4**(j+1) * I[k, j] - I[k-1, j]) / (4**(j+1) - 1)
+
+	    #print(I[k,0:k+1])   # display intermediate results
+ 	
+ 	print(I)
+	return I
+
+
+
+'''
+def Romberg1(fun,x0,x1):
 	e = 2.7182
 	n = int(input())
-	r = np.array([[0]*(n+1)]*(n),float)
+	r = np.array([[0]*(n)]*(n),float)
 
-	h = float(x1-x0)
-	print("h",h)
+	h = x1-x0
 
 	#R00
 	x = x0
-	s1 = float(eval(fun))
-	print("f(x0)",s1)
-	x = x1
-	s2 = float(eval(fun))
-	print("f(x1)",s2)
-	r[0,0] = (1/2) * h * (s1 + s2)
+	s1 = eval(f)
+	x=x1
+	s2 = eval(f)
 
-	h = h/2
+	# r00 = h*(f(a)*f(b))/2
+	r[0,0] = h * 0.5 * (s1+s2)
 
+	#R10
 	s = 0.0
-	for k in range(1,2**(n-1)):
-		x = x0+k*h
+	for k in range(1,2):
+		x = x0 + (k - 0.5) * h
 		s+= eval(fun)
 
-	r[1,0] = (1/2) * r[0,0] + h * s
+	r[1,0] = 0.5 * ( r[0,0] + h * s )
+
+
+
+	#R20
+	#h = h*0.125
+
+	s = 0.0
+	for k in range(1,3):
+		x = x0 +(k-0.5) * h
+		s+= eval(fun)
+
+	r[2,0] = 0.5 * ( r[0,0] + h * s )
+
+	
+	#R11
+	r[1,1] = (4 * r[1,0] - r[0,0]) / (4-1)
+
+
+	#R21
+	r[2,1] = (4 * r[2,0] - r[1,0])  / (4-1)
+
+
+	#R22
+	r[2,2] = ((4**2)*r[2,1]-r[1,1])/(4**2-1)
+
+
+	s = 0.0
+	for k in range(1,2**(2-1)):
+		x = x0 +(2*k-1)*h
+		s+= eval(fun)
+
+	r[2,0] = (1/2) * r[0,0] + h * s
+
+
 	print (r)
 
 
 	return 0
+'''
 
 
-#Romberg
+#Romberg V1
+'''
 def Romberg2(fun,x0,x1):
 	e = 2.7182
 	n = int(input())
@@ -226,7 +295,7 @@ def Romberg2(fun,x0,x1):
 	print (r)
 
 	return r
-
+'''
 '''
 	Derivacao
 '''
