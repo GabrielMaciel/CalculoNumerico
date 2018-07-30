@@ -12,3 +12,9 @@ gaus:
 
 lm:
 	python T1.py < LM
+
+lms:
+	python T1.py < LMS
+
+lms2:
+	python T1.py < LMS2

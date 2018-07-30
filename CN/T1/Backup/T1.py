@@ -241,77 +241,80 @@ def LinearSimples():
 def LinearMultiplo():
 
 	#declara matriz
-	matX = [0]*l
-	matY = [0]*l
+	mat = [0]*l
 	for i in range(l):
-		matX[i] = [0]*(c-1)
+		mat[i] = [0]*c
 
 	#leitura dos elementos da matriz
-	for i in range(c-1):
+	for i in range(c):
 		for j in range(l):
-			matX[j][i] = float(input())
-	
-	for j in range(l):
-		matY[j] = float(input())
+			mat[j][i] = float(input())
 
-	vx = np.array(matX)
-	vy = np.array(matY)
-
-	#print(vx)
-
+	print(mat)
 	#Valores dos coeficientes
 	alpha = [0]*l
 
-	#X transposta
-	xt = np.transpose(vx)
+	#Matriz Resultante
+	matR = [0]*(c)
+	for i in range(c):
+		matR[i] = [0]*(c)
 
-	#print("transposta")
-	#print(xt)
 
-	#Xt * X
-	xtx = np.matmul(xt,vx)
-
-	#print("transposta * x")
-	#print(xtx)
-
-	#(Xt * x) ^-1
-	xtxInv = inv(xtx)
-
-	#print("Inversa")
-	#print(xtxInv)
-
-	#Xt * Y
-	xty = np.matmul(xt, vy)
-
-	#print("transposta * Y")
-	#print(xt)
-
-	#alpha = (Xt * x)^(-1) * Xt * Y
-	alpha = np.matmul(xtxInv, xty)
-
-	print("ALPHA")
-	print(alpha)
-
-	x1 = vx[:,0]
-	x2 = vx[:,1]
-
-	R = [0]*l
-
-	for i in range(l):
-		R[i] = alpha[0]*vx[i][0]+alpha[1]*vx[i][1]
+	#n
+	matR[0][0] = l
 	
+	#Y
+	#matR[0][c-1] = calcularSomatorioYVet(mat[c-1],c)
+
+	#Calcula intermediarios
+	for i in range(1,c):
+		matR[i][0] = calcularSomatorioXVet(mat[i-1], c)
+		matR[0][i] = calcularSomatorioXVet(mat[i-1], c)
+		matR[i][c-1] = calcularSomatorioXX(mat[i-1],mat[c-1])
+
+	matR[0][c-1] = calcularSomatorioXVet(mat[c-1], c)
+
+	for i in range(1,c):
+		for j in range(1,c):
+			 matR[i][j] = calcularSomatorioXX(mat[i-1], mat[j-1])
+
+	Y = np.array([calcularSomatorioYVet(mat[c-1],c),calcularSomatorioXX(mat[0],mat[c-1]),calcularSomatorioXX(mat[1],mat[c-1])])
+	#print("Y", Y)
+
+	mR = np.matrix(matR)
+	#print("Matriz", mR)
+
+	#mat * matT
+	step1=np.matmul(mR,mR.transpose())
+
+	#print("Step1", step1)
+
+	#inversa de step1
+	step2 = step1.I
+	
+	#print("Step2",step2)
+	
+	#mat * step2
+	step3 = step2 * mR
+
+	#print("Step3",step3)
+
+	#step3 * Y
+	MF =  step3.dot(Y)
+
+	#print("MF",MF)
+
+	R = GAUSS(matR, c)
 	
 	print("Calculo usado: (Mat*MatT)^-1 * Mat * Y")
 
-	print(alpha)
+	print(MF)
 
-	#plt.plot(mat[0],mat[c],'ro',mat[1],mat[c],'ro', R,R,'-')
+	plt.plot(mat[0],mat[c],'ro',mat[1],mat[c],'ro', R,R,'-')
 	
 	plt.show()
 
 	return 0
-
-	
 
 def LinearPolinomial():
 

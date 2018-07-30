@@ -8,7 +8,6 @@
 import scipy.integrate as integrate
 import scipy
 import numpy as np
-from sympy import *
 import matplotlib.pyplot as plt
 
 

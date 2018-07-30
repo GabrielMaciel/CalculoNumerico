@@ -8,7 +8,6 @@
 import scipy.integrate as integrate
 import scipy
 import numpy as np
-from sympy import *
 import matplotlib.pyplot as plt
 
 
@@ -159,9 +158,40 @@ def Simpson(x0,x1):
 		Romberg
 '''
 
+def Romberg(fun,x0,x1):
+	e = 2.7182
+	n = int(input())
+	r = np.array([[0]*(n+1)]*(n),float)
+
+	h = float(x1-x0)
+	print("h",h)
+
+	#R00
+	x = x0
+	s1 = float(eval(fun))
+	print("f(x0)",s1)
+	x = x1
+	s2 = float(eval(fun))
+	print("f(x1)",s2)
+	r[0,0] = (1/2) * h * (s1 + s2)
+
+	h = h/2
+
+	s = 0.0
+	for k in range(1,2**(n-1)):
+		x = x0+k*h
+		s+= eval(fun)
+
+	r[1,0] = (1/2) * r[0,0] + h * s
+	print (r)
+
+
+	return 0
+
 
 #Romberg
-def Romberg(fun,x0,x1):
+def Romberg2(fun,x0,x1):
+	e = 2.7182
 	n = int(input())
 	r = np.array([[0]*(n+1)]*(n+1),float)
 	h = x1-x0
@@ -171,6 +201,8 @@ def Romberg(fun,x0,x1):
 	s2 = eval(fun)
 	r[0,0] = (1/2) * h*(s1+s2)
 	
+
+
 	p2 = 1
 	
 	for i in xrange(0, 3):
