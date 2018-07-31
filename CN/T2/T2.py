@@ -79,7 +79,7 @@ def iF():
 def erro(f2):
 
 	h = x1 - x0
-	x = Symbol('x')
+	#x = Symbol('x')
 	#*(-(h*h*h/12))
 	s1 = f2
 	x = (x1-x0)/2
